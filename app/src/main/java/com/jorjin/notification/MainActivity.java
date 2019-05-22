@@ -1,0 +1,186 @@
+package com.jorjin.notification;
+
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
+import static com.jorjin.notification.App.CHANNEL_1_ID;
+import static com.jorjin.notification.App.CHANNEL_2_ID;
+import static com.jorjin.notification.App.CHANNEL_3_ID;
+import static com.jorjin.notification.App.CHANNEL_4_ID;
+import static com.jorjin.notification.App.CHANNEL_5_ID;
+
+public class MainActivity extends AppCompatActivity {
+    private NotificationManagerCompat notificationManager;
+    private EditText editTextMessage;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        notificationManager = NotificationManagerCompat.from(this);
+        editTextMessage = findViewById(R.id.edit_text_message);
+    }
+
+    public void sendOnChannel1(View v) {
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, activityIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.ic_one)
+                .setContentText("Inbox Style")
+                .setColor(Color.YELLOW)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .setStyle(new NotificationCompat.InboxStyle()
+                        .addLine("Tooz")
+                        .addLine("Jorjin")
+                        .addLine("Tooz")
+                        .addLine("Jorjin")
+                        .addLine("Tooz")
+                        .addLine("Jorjin")
+                        .addLine("Tooz")
+                        .setBigContentTitle("J6S")
+                        .setSummaryText("Summary Text"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build();
+
+        notificationManager.notify(1, notification);
+    }
+
+
+    public void sendOnChannel2(View v) {
+        String message = editTextMessage.getText().toString();
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, activityIntent, 0);
+
+        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
+        broadcastIntent.putExtra("toastMessage", message);
+        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
+                0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_2_ID)
+                .setSmallIcon(R.drawable.ic_two)
+                .setContentTitle("Action Button")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setColor(Color.BLUE)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .addAction(R.mipmap.ic_launcher, "Toast", actionIntent)
+                .build();
+
+        notificationManager.notify(2, notification);
+    }
+
+    public void sendOnChannel3(View v) {
+        String message = editTextMessage.getText().toString();
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, activityIntent, 0);
+
+        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
+        broadcastIntent.putExtra("toastMessage", message);
+        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
+                0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_3_ID)
+                .setSmallIcon(R.drawable.ic_three)
+                .setContentText("About Jorjin")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(getString(R.string.long_dummy_text))
+                        .setBigContentTitle("Big Text  Style")
+                        .setSummaryText("Summaty Text"))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setColor(Color.YELLOW)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .addAction(R.mipmap.ic_launcher, "Toast", actionIntent)
+                .build();
+
+        notificationManager.notify(3, notification);
+    }
+
+    public void sendOnChannel4(View v) {
+
+        Intent activityIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,
+                0, activityIntent, 0);
+
+
+        Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.car2);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_4_ID)
+                .setSmallIcon(R.drawable.ic_four)
+                .setContentTitle("Big Picture Style")
+                .setContentText("Car")
+                .setLargeIcon(picture)
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(picture)
+                        .bigLargeIcon(null))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setColor(Color.BLUE)
+                .setOnlyAlertOnce(true)
+                .build();
+
+        notificationManager.notify(4, notification);
+    }
+
+
+    public void sendOnChannel5(View v) {
+        final int progressMax = 100;
+
+        final NotificationCompat.Builder notification = new NotificationCompat.Builder(this, CHANNEL_5_ID)
+                .setSmallIcon(R.drawable.ic_five)
+                .setContentTitle("Download  Progress Bar")
+                .setContentText("Download in progress")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOngoing(true)
+                .setOnlyAlertOnce(true)
+                .setColor(Color.MAGENTA)
+                .setProgress(progressMax, 0, true);
+
+        notificationManager.notify(5, notification.build());
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SystemClock.sleep(2000);
+                for (int progress = 0; progress <= progressMax; progress += 20) {
+                    notification.setProgress(progressMax, progress, false);
+                    notificationManager.notify(5, notification.build());
+                    SystemClock.sleep(1000);
+                }
+                notification.setContentText("Download Complete")
+                        .setProgress(0, 0, false)
+                        .setOngoing(false);
+                notificationManager.notify(5, notification.build());
+            }
+        }).start();
+    }
+}
